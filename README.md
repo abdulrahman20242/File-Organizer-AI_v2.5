@@ -8,13 +8,13 @@ Tired of cluttered "Downloads" or "Desktop" folders? File Organizer Pro automate
 
 ---
 
-## ✨ What's New in v2.4
+## ✨ What's New in v2.5
 
-*   **🎨 Enhanced Category Editor:** Completely redesigned with Auto-Detect, Bulk Add, Search, Import/Export, and Color Coding features.
-*   **🎯 Skip Uncategorized Files:** New option to skip files with extensions not in any category instead of moving them to "Others".
-*   **⌨️ Keyboard Shortcuts:** Added shortcuts for faster workflow in the Category Editor.
-*   **🌐 Default English:** Application now starts in English by default.
-*   **🐛 Bug Fixes:** Various improvements and bug fixes.
+*   **🤖 AI Content Organizer:** Brand new "By Content (AI)" mode powered by Ollama. Analyzes file contents and project structures to intelligently suggest destination folders — not just by extension, but by actual meaning.
+*   **🗂️ Smart Project Detection:** Automatically detects programming projects (Python, React, Flutter, Rust, Java...) and moves them as a single unit to the right category folder.
+*   **☁️ Local & Cloud Models:** Supports local Ollama models alongside cloud models (`gemma4:31b-cloud`, `gemma3:27b-cloud`) — all selectable from within the app.
+*   **👁️ AI Preview Dialog:** Review and edit the AI's suggested destinations before any files are moved.
+*   **🐛 Bug Fixes & Stability:** Various improvements including a PySide6 compatibility fix for newer versions.
 
 ---
 
@@ -28,13 +28,23 @@ Tired of cluttered "Downloads" or "Desktop" folders? File Organizer Pro automate
     *   **By Date (Day):** Sorts files into `Year/Month/Day` folders (e.g., `2024/10/16`).
     *   **By Size:** Categorizes files as `Small`, `Medium`, or `Large`.
     *   **By First Letter:** Groups files into alphabetical folders (`A`, `B`, `C`...).
+    *   **🆕 By Content (AI):** Uses Ollama AI to read file contents and suggest meaningful folder names.
 *   **Flexible Actions:** Choose to **Move** original files or create a **Copy**.
 *   **Smart Conflict Resolution:** Automatically `Rename`, `Overwrite`, or `Skip` files if they already exist in the destination.
 *   **Recursive Processing:** Option to include all files from subdirectories.
 *   **Skip Uncategorized:** Option to skip files with unknown extensions instead of moving to "Others".
 
+### 🤖 AI Content Organizer (New in v2.5)
+*   **Content-Aware Classification:** Reads the first 1500 characters of text files to understand their purpose before categorizing.
+*   **40+ Supported Text Formats:** `.py`, `.js`, `.md`, `.txt`, `.json`, `.yaml`, `.sql`, `.html`, `.css`, and many more.
+*   **PDF Support:** Extracts text from PDFs via `pypdf` or `pdfplumber` (optional install).
+*   **Filename Fallback:** Files that can't be read (images, videos, audio) are classified by filename alone — the process never stops.
+*   **Project Detection:** Scans sub-folders for indicator files (`package.json`, `requirements.txt`, `Cargo.toml`, `.git`, etc.) and treats them as projects, moving the entire folder as one unit.
+*   **Editable Preview:** Before any file is moved, a preview dialog shows the full plan. Double-click any row to change the destination.
+*   **Model Flexibility:** Refresh the model list at any time to pick from available local or cloud Ollama models.
+
 ### User Experience & Interface
-*   **✨ Enhanced Category Editor:** A powerful interface to manage categories with these features:
+*   **✨ Enhanced Category Editor:** A powerful interface to manage categories:
     *   **Auto-Detect:** Scan any folder to discover new file extensions automatically.
     *   **Quick Add:** Add extensions instantly by typing and pressing Enter.
     *   **Bulk Add:** Add multiple extensions at once (comma or line separated).
@@ -51,9 +61,9 @@ Tired of cluttered "Downloads" or "Desktop" folders? File Organizer Pro automate
 *   **Drag & Drop:** Easily drop your source folder into the path input field.
 
 ### Safety & Customization
-*   **↩️ Undo Last Operation:** A critical safety feature! Revert the entire last organization process with a single click.
-*   **🛡️ Dry-run Mode:** A simulation mode that shows you what will happen **without touching your files**, allowing you to preview the result safely.
-*   **💾 Profiles:** Save and load your favorite settings (e.g., "Sort Downloads" vs. "Backup Photos") for quick reuse.
+*   **↩️ Undo Last Operation:** Revert the entire last organization process with a single click — works with AI mode too.
+*   **🛡️ Dry-run Mode:** A simulation mode that shows you what will happen **without touching your files**.
+*   **💾 Profiles:** Save and load your favorite settings for quick reuse.
 *   **🚫 Skip Unknown Files:** Choose to skip files that don't match any category instead of moving them to "Others".
 *   **Easy Windows Launch:** Includes a `Sortify.bat` script for double-click execution.
 
@@ -65,8 +75,8 @@ Tired of cluttered "Downloads" or "Desktop" folders? File Organizer Pro automate
 
 1.  Clone the repository and navigate into the project directory:
     ```bash
-    git clone https://github.com/abdulrahman20242/File-Organizer_v2.4.git
-    cd File-Organizer_v2.4
+    git clone https://github.com/abdulrahman20242/File-Organizer-AI_v2.5.git
+    cd File-Organizer-AI_v2.5
     ```
 
 2.  **Create and activate a virtual environment (Recommended):**
@@ -81,52 +91,63 @@ Tired of cluttered "Downloads" or "Desktop" folders? File Organizer Pro automate
         source venv/bin/activate
         ```
 
-3.  Install the required libraries using pip:
+3.  Install the required libraries:
     ```bash
     pip install -r requirements.txt
+    ```
+
+4.  **(Optional) For AI PDF support:**
+    ```bash
+    pip install pypdf
+    # or
+    pip install pdfplumber
+    ```
+
+5.  **(Required for AI mode) Install Ollama:**
+    Download from [https://ollama.com](https://ollama.com), then pull a model:
+    ```bash
+    ollama pull gemma2:2b
     ```
 
 ---
 
 ## 🖥️ Usage
 
-You can run the application in two ways:
+### Standard Mode
+```bash
+python file_organizer_gui.py
+```
+Or on Windows, double-click **`Sortify.bat`**.
 
-1.  **From the terminal (all platforms):**
-    (Make sure your virtual environment is active)
-    ```bash
-    python file_organizer_gui.py
-    ```
+1.  **Select Source & Destination:** Use "Browse" or drag-and-drop. If destination is empty, `Organized_Files` is created inside the source.
+2.  **Choose Options:** Mode, action (move/copy), conflict policy.
+3.  **Run** → monitor progress → **Undo** if needed.
 
-2.  **On Windows (easy method):**
-    Simply double-click the **`Sortify.bat`** file. This script automatically launches the application.
-
-**How it works:**
-1.  **Select Source & Destination:** Use the "Browse" buttons or drag-and-drop a folder. If the destination is empty, an `Organized_Files` folder will be created inside the source.
-2.  **Choose Your Options:** Select the organization mode, action (move/copy), and conflict policy.
-3.  **Optional:** Check "Skip uncategorized files" to ignore files with unknown extensions.
-4.  **Run:** Click the "Run" button to start.
-5.  **Monitor:** Watch the progress bar and view live logs or the color-coded results table.
-6.  **Undo (if needed):** If you're not happy, just click "Undo".
+### AI Mode
+1.  Start Ollama: `ollama serve`
+2.  In the app, select **"By Content (AI)"** from the Mode dropdown.
+3.  The **AI Settings Panel** appears — set your Ollama URL and click **Refresh** to load models.
+4.  Select source & destination, then click **Run**.
+5.  The AI analyzes each file/project in the background (progress shown live in log).
+6.  A **Preview Dialog** appears — review suggestions, edit any destination, then click **Proceed**.
+7.  Files are moved/copied. Use **Undo** to revert if needed.
 
 ---
 
 ## ⚙️ Customization
 
-### Using the Category Editor (Recommended)
+### Using the Category Editor
+Access from `Edit → Manage Categories` or the toolbar.
 
-The easiest way to customize file categories is through the built-in **Category Editor**. You can access it from the `Edit -> Manage Categories` menu or the toolbar.
-
-**New Features in the Enhanced Editor:**
-*   **Auto-Detect:** Click "Auto-Detect" to scan a folder and discover all file extensions in it.
-*   **Bulk Add:** Click "Bulk Add" to add multiple extensions at once.
-*   **Import/Export:** Save your category setup to a JSON file or load one from another computer.
-*   **Search:** Use `Ctrl+F` to quickly find any category or extension.
-*   **Colors:** Right-click on a category to change its color for visual identification.
+*   **Auto-Detect:** Scan a folder to discover all file extensions in it.
+*   **Bulk Add:** Add multiple extensions at once.
+*   **Import/Export:** Save/load your category setup as JSON.
+*   **Search:** `Ctrl+F` to find any category or extension.
+*   **Colors:** Right-click a category to change its color.
 
 ### Manual Configuration
 
-For advanced users, you can also manually edit the **`categories.json`** file. For example, to add `.eps` files to the "Images" category:
+Edit **`categories.json`** directly:
 ```json
 {
   "Images": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp", ".heic", ".eps"],
@@ -136,7 +157,7 @@ For advanced users, you can also manually edit the **`categories.json`** file. F
 }
 ```
 
-You can also customize category colors in **`category_colors.json`**:
+Edit **`category_colors.json`** for colors:
 ```json
 {
   "Images": "#4CAF50",
@@ -150,56 +171,63 @@ You can also customize category colors in **`category_colors.json`**:
 
 ## 🧪 Running Tests
 
-This project includes a comprehensive test suite with **69 tests** to ensure the core logic is working correctly.
+The project includes **95 tests** covering all core logic and the new AI module.
 
-1.  Install the development dependencies:
+1.  Install test dependencies:
     ```bash
-    pip install -r requirements-dev.txt
+    pip install pytest
     ```
 
-2.  Run pytest from the project's root directory:
+2.  Run from the project root:
     ```bash
-    # Run all tests with verbose output
+    # Run all tests
     pytest test_organizer.py -v
-    
+
     # Quick summary
     pytest test_organizer.py -q
-    
+
+    # AI module tests only
+    pytest test_organizer.py::TestAIContentOrganizer -v
+
     # With coverage report
     pytest test_organizer.py --cov=file_organizer --cov-report=html
-    
-    # Run specific test class
-    pytest test_organizer.py::TestOrganizeByType -v
-    
-    # Run specific test
-    pytest test_organizer.py::TestUndo::test_undo_move_operation -v
     ```
+
+> **Note for Windows users:** If your C: drive is low on space, tests use `conftest.py` to redirect temp files to the project folder automatically.
 
 ---
 
 ## 📒 Project Structure
 
-*   `file_organizer_gui.py`: The main file for the PySide6 graphical user interface.
-*   `file_organizer.py`: Contains all the backend logic for file operations (sorting, undo, etc.).
-*   `category_editor.py`: The enhanced category editor dialog with advanced features.
-*   `test_organizer.py`: The `pytest` test suite for the backend logic (69 tests).
-*   `Sortify.bat`: A convenience script for launching the GUI on Windows.
-*   `translations.json`: Stores text strings for multi-language support (English & Arabic).
-*   `categories.json`: Default and user-customizable file type categories.
-*   `category_colors.json`: Stores the color coding for each category.
-*   `settings.json`: Stores user settings (created automatically).
-*   `profiles.json`: Stores saved profiles (created automatically).
-*   `requirements.txt`: Main dependencies required to run the application.
-*   `requirements-dev.txt`: Extra dependencies for development and testing.
+```
+File-Organizer-AI_v2.5/
+├── file_organizer_gui.py      Main PySide6 GUI
+├── file_organizer.py          Core file operation logic (move, copy, undo, etc.)
+├── ai_content_organizer.py    🆕 AI engine: Ollama client, content analyzer, workers, preview dialog
+├── category_editor.py         Enhanced category editor dialog
+├── test_organizer.py          pytest suite (95 tests)
+├── conftest.py                🆕 pytest temp dir fix for Windows
+├── translations.json          EN + AR strings (includes new AI keys)
+├── Sortify.bat                Windows double-click launcher
+├── categories.json            File type categories (auto-generated)
+├── category_colors.json       Category colors (auto-generated)
+├── settings.json              User settings including AI URL & model (auto-generated)
+├── profiles.json              Saved profiles (auto-generated)
+├── requirements.txt           Runtime dependencies
+└── requirements-dev.txt       Dev/test dependencies
+```
 
 ---
 
 ## 🔧 Troubleshooting
 
-*   **App doesn't start:** Make sure Python 3.9+ is installed and all dependencies are installed via `pip install -r requirements.txt`.
-*   **Theme not working:** Install pyqtdarktheme: `pip install pyqtdarktheme`.
-*   **Icons not showing:** Install QtAwesome: `pip install qtawesome`.
-*   **Reset to defaults:** Delete `settings.json`, `categories.json`, and `profiles.json` to reset all settings.
+*   **App doesn't start:** Make sure Python 3.9+ is installed and run `pip install -r requirements.txt`.
+*   **Theme not working:** `pip install pyqtdarktheme`
+*   **Icons not showing:** `pip install qtawesome`
+*   **AI mode — "Cannot connect to Ollama":** Make sure Ollama is running (`ollama serve`) and the URL in AI Settings is correct.
+*   **AI mode — no models in dropdown:** Click **Refresh** after Ollama is running. Make sure you've pulled at least one model (`ollama pull gemma2:2b`).
+*   **Tests failing with "No space left on device":** Your C: drive is full. The included `conftest.py` redirects pytest temp files to the project folder (F: or wherever the project lives).
+*   **Reset to defaults:** Delete `settings.json`, `categories.json`, and `profiles.json`.
 
 ---
 
@@ -208,27 +236,28 @@ This project includes a comprehensive test suite with **69 tests** to ensure the
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 1.  Fork the repository
-2.  Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the branch (`git push origin feature/AmazingFeature`)
+2.  Create your feature branch: `git checkout -b feature/AmazingFeature`
+3.  Commit your changes: `git commit -m 'Add some AmazingFeature'`
+4.  Push to the branch: `git push origin feature/AmazingFeature`
 5.  Open a Pull Request
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## 👨‍💻 Author
 
-**Abdulrahman** - [GitHub Profile](https://github.com/abdulrahman20242)
+**Abdulrahman** — [GitHub Profile](https://github.com/abdulrahman20242)
 
 ---
 
 ## 🙏 Acknowledgments
 
-*   [PySide6](https://doc.qt.io/qtforpython/) - Qt for Python
-*   [QtAwesome](https://github.com/spyder-ide/qtawesome) - Iconic fonts for PyQt/PySide
-*   [pyqtdarktheme](https://github.com/5yutan5/PyQtDarkTheme) - Dark theme support
+*   [PySide6](https://doc.qt.io/qtforpython/) — Qt for Python
+*   [QtAwesome](https://github.com/spyder-ide/qtawesome) — Iconic fonts for PyQt/PySide
+*   [pyqtdarktheme](https://github.com/5yutan5/PyQtDarkTheme) — Dark theme support
+*   [Ollama](https://ollama.com) — Local AI model runtime
